@@ -61,7 +61,11 @@ namespace ImageFinder
             // Save the image as a JPEG file with quality level.
             EncoderParameter encoderParameter = new EncoderParameter(encoder, quality);
             encoderParameters.Param[0] = encoderParameter;
-            newImage.Save(fileName, imageCodecInfo, encoderParameters);            
+            newImage.Save(fileName, imageCodecInfo, encoderParameters);    
+            
+            // Clean up bitmaps immediately to stop exhausting system memory
+            image.Dispose();
+            newImage.Dispose();
         }
 
         private static Bitmap GetBitmapFromBytes(byte[] imageBytes)
