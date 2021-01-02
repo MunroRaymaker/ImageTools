@@ -3,16 +3,6 @@ using System.Collections.Generic;
 
 namespace ImageFinder
 {
-    public enum FileType
-    {
-        Unknown,
-        Jpg,
-        Bmp,
-        Gif,
-        Png,
-        Pdf
-    }
-
     public static class FilesHelper
     {
         private static readonly Dictionary<FileType, byte[]> KNOWN_FILE_HEADERS = new Dictionary<FileType, byte[]>()
