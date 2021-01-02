@@ -31,17 +31,24 @@ namespace ImageFinder
 
             Stopwatch timer = new Stopwatch();
             timer.Restart();
+            Console.WriteLine("Working...");
+            ConsoleUtility.WriteProgressBar(0);
 
-            foreach (string file in Directory.EnumerateFiles(dirPath))
+            var list = Directory.EnumerateFiles(dirPath).ToArray();
+
+            foreach (string file in list)
             {
+                processed++;
+                int complete = (int)Math.Round((double)(processed * 100) / list.Length);
+                ConsoleUtility.WriteProgressBar(complete, true);
+               
                 if (Path.GetExtension(file).Length == 0)
                 {
                     var bytes = File.ReadAllBytes(file);
                     var fileType = FilesHelper.GetKnownFileType(bytes);
                     var ext = ("." + fileType).ToLower();
-                    processed++;
-
-                    if(!extensionWhitelist.Contains(ext))
+                    
+                    if (!extensionWhitelist.Contains(ext))
                     {
                         notImages++;
                         continue;
@@ -63,11 +70,12 @@ namespace ImageFinder
             }
 
             timer.Stop();
+            Console.WriteLine();
             System.Console.WriteLine("Done. Processed {0} files. Success: {1}, Failed: {2}, Not images {3}. Took {4}ms", processed, success, failed, notImages, timer.ElapsedMilliseconds);
 
             if (Debugger.IsAttached)
             {
-                Console.WriteLine("Hit eny any...");
+                Console.WriteLine("Hit any any...");
                 Console.ReadKey();
             }
         }
