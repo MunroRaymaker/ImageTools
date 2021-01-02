@@ -18,7 +18,7 @@ namespace ImageFinder
             }
 
             string dirPath = args.ToList().IndexOf("--path") > 0 ? args[args.ToList().IndexOf("--path") + 1] : throw new ArgumentException("Missing argument --path"); 
-            string outputPath = args.ToList().IndexOf("--outpu") > 0 ? args[args.ToList().IndexOf("--output") + 1] : throw new ArgumentException("Missing argument --output"); 
+            string outputPath = args.ToList().IndexOf("--output") > 0 ? args[args.ToList().IndexOf("--output") + 1] : throw new ArgumentException("Missing argument --output"); 
             int maxWidth = args.ToList().IndexOf("--mw") > 0 ? Convert.ToInt32(args[args.ToList().IndexOf("--mw") + 1]) : 1048;
             int maxHeight = args.ToList().IndexOf("--mh") > 0 ? Convert.ToInt32(args[args.ToList().IndexOf("--mh") + 1]) : 768;
             int quality = args.ToList().IndexOf("--q") > 0 ? Convert.ToInt32(args[args.ToList().IndexOf("--q") + 1]) : 80;

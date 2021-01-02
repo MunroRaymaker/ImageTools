@@ -1,5 +1,5 @@
 # Introduction 
-This is a small console helper writte with VS Code to find images without extensions from a directory and also resize them.
+This is a small console helper written with VS Code to find images without extensions from a directory and also resize them.
 
 # Getting started
 There is only one console application which takes four arguments
