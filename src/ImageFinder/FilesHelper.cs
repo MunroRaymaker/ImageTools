@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace ImageFinder
 {
@@ -29,6 +30,14 @@ namespace ImageFinder
             }
 
             return FileType.Unknown;
+        }
+
+        public static void EnsureDirectoryExists(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
         }
     }
 }

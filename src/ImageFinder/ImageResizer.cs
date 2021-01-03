@@ -22,6 +22,12 @@ namespace ImageFinder
             float ratioY = (float)maxHeight / (float)originalHeight;
             float ratio = Math.Min(ratioX, ratioY);
 
+            // Don't enlarge small images or images that are to scale.
+            if (ratio >= 1)
+            {
+                ratio = 1;
+            }
+
             // New width and height based on aspect ratio
             int newWidth = (int)(originalWidth * ratio);
             int newHeight = (int)(originalHeight * ratio);

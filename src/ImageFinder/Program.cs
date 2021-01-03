@@ -6,78 +6,102 @@ using System.Linq;
 
 namespace ImageFinder
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            System.Console.WriteLine("Finds images with no extensions and resizes them.");
-            if(args.Length < 4)
+            // Normalize arguments (lowercased with single hyphen)
+            args = (args ?? new string[0]).Where(a => string.IsNullOrWhiteSpace(a) == false).Select(a => a.ToLowerInvariant().Replace("--", "-")).ToArray();
+
+            Console.WriteLine("Finds images with no extensions and resizes them.");
+
+            // Show help
+            if (args.Length == 0 || args.Length < 4 || (args.Length == 1 && (args[0] == "-?" || args[0] == "-h" || args[0] == "-help")))
             {
-                System.Console.WriteLine("Usage: imagefinder.exe --path C:\\temp\\somedir --output c:\\temp\\anotherdir --mw 1048 --mh 768 --q 80");
+                Console.WriteLine("Usage of the image finder application");
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine(" -?                      > Shows this information");
+                Console.WriteLine(" -h[elp]                 > Shows this information");
+                Console.WriteLine(" -p[ath]                 > Path to unknown files");
+                Console.WriteLine(" -o[utput]               > Path to save image files");
+                Console.WriteLine(" -mw                     > Maximum width of image (default 1048).");
+                Console.WriteLine(" -mh                     > Maximum height of image (default 648).");
+                Console.WriteLine(" -q[uality]              > Quality of resized image file (default 80)");
+                Console.WriteLine("-----------------------------------------------------------");
                 return;
             }
 
-            string dirPath = args.ToList().IndexOf("--path") >= 0 ? args[args.ToList().IndexOf("--path") + 1] : throw new ArgumentException("Missing argument --path"); 
-            string outputPath = args.ToList().IndexOf("--output") >= 0 ? args[args.ToList().IndexOf("--output") + 1] : throw new ArgumentException("Missing argument --output"); 
-            int maxWidth = args.ToList().IndexOf("--mw") >= 0 ? Convert.ToInt32(args[args.ToList().IndexOf("--mw") + 1]) : 1048;
-            int maxHeight = args.ToList().IndexOf("--mh") >= 0 ? Convert.ToInt32(args[args.ToList().IndexOf("--mh") + 1]) : 768;
-            int quality = args.ToList().IndexOf("--q") >= 0 ? Convert.ToInt32(args[args.ToList().IndexOf("--q") + 1]) : 80;
+            var dirPath = args.Any(a => a.StartsWith("-p")) ? args[Array.IndexOf(args, args.First(a => a.StartsWith("-p"))) + 1] : throw new ArgumentException("Missing argument -path");
+            var outputPath = args.Any(a => a.StartsWith("-o")) ? args[Array.IndexOf(args, args.First(a => a.StartsWith("-o"))) + 1] : throw new ArgumentException("Missing argument -output");
+            var maxWidth = args.Any(a => a.StartsWith("-mw")) ? Convert.ToInt32(args[Array.IndexOf(args, args.First(a => a.StartsWith("-mw"))) + 1]) : 1048;
+            var maxHeight = args.Any(a => a.StartsWith("-mh")) ? Convert.ToInt32(args[Array.IndexOf(args, args.First(a => a.StartsWith("-mh"))) + 1]) : 768;
+            var quality = args.Any(a => a.StartsWith("-q")) ? Convert.ToInt32(args[Array.IndexOf(args, args.First(a => a.StartsWith("-q"))) + 1]) : 80;
+            var extensionWhitelist = new List<string> { ".jpg", ".jpeg", ".gif", ".png" };
 
+            var config = new Config(dirPath, outputPath, maxWidth, maxHeight, quality, extensionWhitelist);
+
+            Stopwatch timer = new Stopwatch();
+            timer.Restart();
+
+            ProcessFiles(config);
+
+            timer.Stop();
+            Console.WriteLine("Took {0:hh\\:mm\\:ss\\.ff}", timer.Elapsed);
+
+            if (Debugger.IsAttached)
+            {
+                Console.WriteLine("Hit any key...");
+                Console.ReadKey();
+            }
+        }
+
+        private static void ProcessFiles(Config config)
+        {
             int processed = 0;
             int success = 0;
             int failed = 0;
             int notImages = 0;
-            var extensionWhitelist = new List<string> { ".jpg", ".jpeg", ".gif", ".png" };
 
-            Stopwatch timer = new Stopwatch();
-            timer.Restart();
-            Console.WriteLine("Working...");
+            var list = Directory.EnumerateFiles(config.SourcePath).ToArray();
+            Console.WriteLine("Processing files...");
             ConsoleUtility.WriteProgressBar(0);
-
-            var list = Directory.EnumerateFiles(dirPath).ToArray();
 
             foreach (string file in list)
             {
                 processed++;
                 int complete = (int)Math.Round((double)(processed * 100) / list.Length);
                 ConsoleUtility.WriteProgressBar(complete, true);
-               
+
                 if (Path.GetExtension(file).Length == 0)
                 {
                     var bytes = File.ReadAllBytes(file);
                     var fileType = FilesHelper.GetKnownFileType(bytes);
                     var ext = ("." + fileType).ToLower();
-                    
-                    if (!extensionWhitelist.Contains(ext))
+
+                    if (!config.ExtensionWhitelist.Contains(ext))
                     {
                         notImages++;
                         continue;
                     }
 
-                    string newFilePath = Path.Combine(outputPath, Path.GetFileNameWithoutExtension(file) + ext);
-                    
+                    FilesHelper.EnsureDirectoryExists(config.DestinationPath);
+                    string newFilePath = Path.Combine(config.DestinationPath, Path.GetFileNameWithoutExtension(file) + ext);
+
                     try
                     {
-                        ImageConverter.Convert(bytes, maxWidth, maxHeight, quality, newFilePath, ext);
+                        ImageConverter.Convert(bytes, config.MaxWidth, config.MaxHeight, config.Quality, newFilePath, ext);
                         success++;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
-                        System.Console.WriteLine(ex.Message);
+                        Console.WriteLine(ex.Message);
                         failed++;
                     }
                 }
             }
 
-            timer.Stop();
             Console.WriteLine();
-            System.Console.WriteLine("Done. Processed {0} files. Success: {1}, Failed: {2}, Not images {3}. Took {4}ms", processed, success, failed, notImages, timer.ElapsedMilliseconds);
-
-            if (Debugger.IsAttached)
-            {
-                Console.WriteLine("Hit any any...");
-                Console.ReadKey();
-            }
+            Console.WriteLine("Done. Processed {0} files. Success: {1}, Failed: {2}, Not images {3}.", processed, success, failed, notImages);
         }
-    } 
+    }
 }
