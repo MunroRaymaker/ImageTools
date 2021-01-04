@@ -28,6 +28,12 @@ namespace ImageFinder
                 ratio = 1;
             }
 
+            // Special case for banner images with a width of 1322
+            if (originalWidth == 1322)
+            {
+                ratio = 1;
+            }
+
             // New width and height based on aspect ratio
             int newWidth = (int)(originalWidth * ratio);
             int newHeight = (int)(originalHeight * ratio);
