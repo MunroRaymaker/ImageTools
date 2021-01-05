@@ -9,7 +9,7 @@ namespace ImageFinder
 {
     public class ImageConverter
     {
-        public static void Convert(byte[] bytes, int maxWidth, int maxHeight, int quality, string fileName, string ext)
+        public static void Convert(byte[] bytes, int maxWidth, int maxHeight, int quality, string fileName, string ext, int? skipWidth)
         {
             Bitmap image = GetBitmapFromBytes(bytes);
 
@@ -28,8 +28,8 @@ namespace ImageFinder
                 ratio = 1;
             }
 
-            // Special case for banner images with a width of 1322
-            if (originalWidth == 1322)
+            // Special case for banner images with a certain width
+            if (skipWidth.HasValue && originalWidth == skipWidth)
             {
                 ratio = 1;
             }

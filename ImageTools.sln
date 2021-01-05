@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageFinder", "src\ImageFinder\ImageFinder.csproj", "{5DAD77A5-8FBE-4BBD-8023-F0B08B933E5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PngCompressor", "PngCompressor\PngCompressor.csproj", "{4035507B-B144-4F1B-B5CD-7716C5E07A5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PngCompressor", "src\PngCompressor\PngCompressor.csproj", "{4035507B-B144-4F1B-B5CD-7716C5E07A5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

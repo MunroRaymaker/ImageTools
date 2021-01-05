@@ -10,8 +10,9 @@ namespace ImageFinder
         public int MaxHeight { get; }
         public int Quality { get; }
         public List<string> ExtensionWhitelist { get; }
+        public int? SkipWidth { get; set; }
 
-        public Config(string sourcePath, string destinationPath, in int maxWidth, in int maxHeight, in int quality, List<string> extensionWhitelist)
+        public Config(string sourcePath, string destinationPath, in int maxWidth, in int maxHeight, in int quality, List<string> extensionWhitelist, int? skipWidth)
         {
             SourcePath = sourcePath;
             DestinationPath = destinationPath;
@@ -19,6 +20,7 @@ namespace ImageFinder
             MaxHeight = maxHeight;
             Quality = quality;
             ExtensionWhitelist = extensionWhitelist;
+            SkipWidth = skipWidth;
         }
     }
 }
