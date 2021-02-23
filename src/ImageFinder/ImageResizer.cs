@@ -9,13 +9,17 @@ namespace ImageFinder
 {
     public class ImageConverter
     {
-        public static void Convert(byte[] bytes, int maxWidth, int maxHeight, int quality, string fileName, string ext, int? skipWidth)
+        public static void Convert(byte[] bytes, int? maxWidth, int? maxHeight, int quality, string fileName, string ext, int? skipWidth)
         {
             Bitmap image = GetBitmapFromBytes(bytes);
 
             // Get the image's original width and height
             int originalWidth = image.Width;
             int originalHeight = image.Height;
+
+            // Ensure max height and width is set
+            maxHeight = maxHeight == null ? originalHeight : maxHeight;
+            maxWidth = maxWidth == null ? originalWidth : maxWidth;
 
             // To preserve the aspect ratio
             float ratioX = (float)maxWidth / (float)originalWidth;

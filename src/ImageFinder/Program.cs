@@ -24,8 +24,8 @@ namespace ImageFinder
                 Console.WriteLine(" -h[elp]                 > Shows this information");
                 Console.WriteLine(" -p[ath]                 > Path to unknown files");
                 Console.WriteLine(" -o[utput]               > Path to save image files");
-                Console.WriteLine(" -mw                     > Maximum width of image (default 1048).");
-                Console.WriteLine(" -mh                     > Maximum height of image (default 648).");
+                Console.WriteLine(" -mw                     > Maximum width of image (default original width).");
+                Console.WriteLine(" -mh                     > Maximum height of image (default original height).");
                 Console.WriteLine(" -q[uality]              > Quality of resized image file (default 80)");
                 Console.WriteLine(" -s[kip]                 > Skip images with a certain with, eg. 1322.");
                 Console.WriteLine("-----------------------------------------------------------");
@@ -34,8 +34,8 @@ namespace ImageFinder
 
             var dirPath = args.Any(a => a.StartsWith("-p")) ? args[Array.IndexOf(args, args.First(a => a.StartsWith("-p"))) + 1] : throw new ArgumentException("Missing argument -path");
             var outputPath = args.Any(a => a.StartsWith("-o")) ? args[Array.IndexOf(args, args.First(a => a.StartsWith("-o"))) + 1] : throw new ArgumentException("Missing argument -output");
-            var maxWidth = args.Any(a => a.StartsWith("-mw")) ? Convert.ToInt32(args[Array.IndexOf(args, args.First(a => a.StartsWith("-mw"))) + 1]) : 1048;
-            var maxHeight = args.Any(a => a.StartsWith("-mh")) ? Convert.ToInt32(args[Array.IndexOf(args, args.First(a => a.StartsWith("-mh"))) + 1]) : 768;
+            int? maxWidth = args.Any(a => a.StartsWith("-mw")) ? Convert.ToInt32(args[Array.IndexOf(args, args.First(a => a.StartsWith("-mw"))) + 1]) : null;
+            int? maxHeight = args.Any(a => a.StartsWith("-mh")) ? Convert.ToInt32(args[Array.IndexOf(args, args.First(a => a.StartsWith("-mh"))) + 1]) : null;
             var quality = args.Any(a => a.StartsWith("-q")) ? Convert.ToInt32(args[Array.IndexOf(args, args.First(a => a.StartsWith("-q"))) + 1]) : 80;
             int? skip = args.Any(a => a.StartsWith("-s"))
                 ? (Int32.TryParse(args[Array.IndexOf(args, args.First(a => a.StartsWith("-s"))) + 1], out var tempSkip)

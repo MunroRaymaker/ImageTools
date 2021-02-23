@@ -11,7 +11,8 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/bin/Debug/net5.0/ImageFinder.dll",
-            "args": ["--path", "C:\\Users\\jrn\\Downloads\\CorporateMedia", "--output", "C:\\temp\\resized", "--mw", "1048", "--mh", "768"],
+            //"args": ["--path", "C:\\Users\\jrn\\Downloads\\CorporateMedia", "--output", "C:\\temp\\resized", "--mw", "1048", "--mh", "768"],
+            "args": ["--path", "C:\\temp\\in", "--output", "C:\\temp\\out", "-q", "80"],
             "cwd": "${workspaceFolder}",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
